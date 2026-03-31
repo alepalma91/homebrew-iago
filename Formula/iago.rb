@@ -9,7 +9,7 @@ class Iago < Formula
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/alepalma91/iago/releases/download/v0.1.0/iago-0.1.0-darwin-arm64.tar.gz"
+      url "https://github.com/alepalma91/homebrew-iago/releases/download/v0.1.0/iago-0.1.0-darwin-arm64.tar.gz"
       sha256 "dbbb5fce0e007ca82bd113db94a10caffc3500da33e771ca6b1fd767398b11d4"
     end
   end
@@ -26,7 +26,6 @@ class Iago < Formula
     prompts_dir = config_dir/"prompts"
     prompts_dir.mkpath
 
-    # Copy default prompts if not present
     unless (prompts_dir/"system.md").exist?
       cp pkgshare/"prompts/system.md", prompts_dir/"system.md"
     end
@@ -34,12 +33,9 @@ class Iago < Formula
       cp pkgshare/"prompts/instructions.md", prompts_dir/"instructions.md"
     end
 
-    # Create default config if not present
     unless (config_dir/"config.yaml").exist?
       (config_dir/"config.yaml").write <<~YAML
         # iago configuration
-        # See: https://github.com/alepalma91/iago
-
         github:
           poll_interval: 60s
           watched_repos: []
@@ -59,7 +55,6 @@ class Iago < Formula
       YAML
     end
 
-    # Symlink config to user's expected location
     user_config = Pathname.new(Dir.home)/".config/iago"
     unless user_config.exist?
       user_config.mkpath
@@ -79,11 +74,8 @@ class Iago < Formula
       Config: #{etc}/iago/config.yaml (symlinked to ~/.config/iago/)
       Data:   ~/.local/share/iago/
 
-      To start the daemon:
-        iago start
-
-      To run setup wizard:
-        iago setup
+      To start: iago start
+      To setup: iago setup
     EOS
   end
 
