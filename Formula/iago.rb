@@ -16,10 +16,14 @@ class Iago < Formula
     system "bun", "build", "--compile", "--minify", "src/index.ts", "--outfile", "iago"
     bin.install "iago"
 
-    # Build menubar app if swiftc available
+    # Build menubar app (best-effort, not fatal if it fails)
     if which("swiftc")
-      system "make", "menubar-build"
-      bin.install "extras/menubar/iago-bar" if File.exist?("extras/menubar/iago-bar")
+      menubar_ok = quiet_system("make", "menubar-build")
+      if menubar_ok && File.exist?("extras/menubar/iago-bar")
+        bin.install "extras/menubar/iago-bar"
+      else
+        opoo "Menu bar app build failed (optional). Update Xcode Command Line Tools to enable it."
+      end
     end
 
     # Install default prompts
@@ -75,7 +79,7 @@ class Iago < Formula
   end
 
   def caveats
-    <<~EOS
+    s = <<~EOS
       iago requires Claude Code CLI to review PRs:
         https://docs.anthropic.com/en/docs/claude-code
 
@@ -91,6 +95,16 @@ class Iago < Formula
       To run setup wizard:
         iago setup
     EOS
+    unless (bin/"iago-bar").exist?
+      s += <<~EOS
+
+        Menu bar app was not built. To enable it, update Xcode Command Line Tools:
+          sudo rm -rf /Library/Developer/CommandLineTools
+          sudo xcode-select --install
+        Then reinstall: brew reinstall iago
+      EOS
+    end
+    s
   end
 
   test do
