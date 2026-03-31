@@ -9,7 +9,7 @@ class Iago < Formula
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/alepalma91/homebrew-iago/releases/download/v0.1.0/iago-0.1.0-darwin-arm64.tar.gz"
+      url "https://github.com/alepalma91/iago/releases/download/v0.1.0/iago-0.1.0-darwin-arm64.tar.gz"
       sha256 "dbbb5fce0e007ca82bd113db94a10caffc3500da33e771ca6b1fd767398b11d4"
     end
   end
